@@ -38,7 +38,6 @@ NOW=`date +%Y-%m-%d.%H:%M:%S`
 # playernext
 # playerprev
 # playerpause
-# playerpauseforce
 # playerplay
 # playerreplay
 # playerrepeat
@@ -297,7 +296,7 @@ case $COMMAND in
         ;;
     playerstop)
         # stop the player
-        $PATHDATA/resume_play.sh -c=savepos && mpc stop
+        $PATHDATA/resume_play.sh -c=savepos && mpc stop && mpc clear
         #if [ -e $AUDIOFOLDERSPATH/playing.txt ]
         #then
         #    sudo rm $AUDIOFOLDERSPATH/playing.txt
@@ -326,14 +325,9 @@ case $COMMAND in
 	mpc play 1
         ;;
     playerpause)
-        # toggle current track
-        # mpc knows "pause", which pauses only, and "toggle" which pauses and unpauses, whatever is needed
-        # Why on earth has this been called pause instead of toggle? :-)
-        mpc toggle
-        ;;
-    playerpauseforce)
         # pause current track
-        mpc pause
+        # mpc knows "pause", which pauses only, and "toggle" which pauses and unpauses, whatever is needed
+        mpc toggle
         ;;
     playerplay)
         # play / resume current track
@@ -443,7 +437,6 @@ case $COMMAND in
         # has the first song and random from track 2.
         #mpc load "${VALUE//\//SLASH}" && $PATHDATA/shuffle_play.sh -c=shuffle_check && $PATHDATA/single_play.sh -c=single_check && $PATHDATA/resume_play.sh -c=resume
         #mpc load "${VALUE//\//SLASH}" && $PATHDATA/single_play.sh -c=single_check  && $PATHDATA/resume_play.sh -c=resume
-        
         ;;
     playlistadd)
         # add to playlist, no autoplay

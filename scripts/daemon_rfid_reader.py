@@ -26,7 +26,7 @@ while True:
             if cardid != None:
                 subprocess.call([dir_path + '/rfid_trigger_play.sh --cardid=' + cardid], shell=True)
             else:
-                subprocess.call([dir_path + '/rfid_trigger_play.sh --cardid=PAUSE'], shell=True)
+                subprocess.call([dir_path + '/rfid_trigger_play.sh --cardid=STOP'], shell=True)
 
         except OSError as e:
             print "Execution failed:"
