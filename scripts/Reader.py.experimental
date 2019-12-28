@@ -7,6 +7,7 @@
 
 import os.path
 import sys
+import time
 import serial
 import string
 import RPi.GPIO as GPIO
@@ -78,6 +79,8 @@ class Rdm6300Reader:
         baudrate = 9600
         ser_timeout = 0.1
         self.last_card_id = ''
+        self.is_repeating = None
+        self.last_read = 0
         try:
             self.rfid_serial = serial.Serial(device, baudrate, timeout=ser_timeout)
         except serial.SerialException as e:
@@ -91,6 +94,13 @@ class Rdm6300Reader:
             while True:
                 try:
                     read_byte = self.rfid_serial.read()
+                    now = time.time()
+
+                    # Detect card removal on repeating RFID readers..
+                    if self.is_repeating and now-self.last_read > 1 and self.last_card_id is not None:
+                        print("Card removed")
+                        self.last_card_id = None
+                        return None
 
                     if read_byte == b'\x02':    # start byte
                         while read_byte != b'\x03':     # end bye
@@ -102,11 +112,16 @@ class Rdm6300Reader:
                         card_id = ''.join(x for x in card_id if x in string.printable)
 
                         # Only return UUIDs with correct length
-                        if len(card_id) == 12 and card_id != self.last_card_id:
-                            self.last_card_id = card_id
-                            self.rfid_serial.reset_input_buffer()
-                            return self.last_card_id
-
+                        if len(card_id) == 12:
+                            if card_id != self.last_card_id:
+                                self.last_card_id = card_id
+                                self.rfid_serial.reset_input_buffer()
+                                return self.last_card_id
+                            else: # Reader seems to repeat itself..
+                                if now - self.last_read < 1:
+                                    self.is_repeating = True
+                            # Remember last read time
+                            self.last_read = now
                         else:   # wrong UUID length or already send that UUID last time
                             self.rfid_serial.reset_input_buffer()
 
