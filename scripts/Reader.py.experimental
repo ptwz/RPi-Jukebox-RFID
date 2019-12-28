@@ -89,7 +89,7 @@ class Rdm6300Reader:
 
     def readCard(self):
         byte_card_id = b''
-
+        self.last_read = time.time()
         try:
             while True:
                 try:
@@ -97,7 +97,7 @@ class Rdm6300Reader:
                     now = time.time()
 
                     # Detect card removal on repeating RFID readers..
-                    if self.is_repeating and now-self.last_read > 1 and self.last_card_id is not None:
+                    if self.is_repeating and now-self.last_read > 2 and self.last_card_id is not None:
                         print("Card removed")
                         self.last_card_id = None
                         return None
@@ -109,6 +109,7 @@ class Rdm6300Reader:
 
                         card_id = byte_card_id.decode('utf-8')
                         byte_card_id = ''
+                        print(card_id)
                         card_id = ''.join(x for x in card_id if x in string.printable)
 
                         # Only return UUIDs with correct length
