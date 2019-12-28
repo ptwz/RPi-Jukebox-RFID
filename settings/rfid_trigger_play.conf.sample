@@ -42,7 +42,7 @@ CMDREWIND="%CMDREWIND%"
 CMDSEEKFORW="%CMDSEEKFORW%"
 CMDSEEKBACK="%CMDSEEKBACK%"
 # pause audio playout
-CMDPAUSE="%CMDPAUSE%"
+CMDPAUSE="PAUSE"
 # resume audio playout (makes only sense in combination with pause)
 CMDPLAY="%CMDPLAY%"
 # Timer top stop after x minutes
