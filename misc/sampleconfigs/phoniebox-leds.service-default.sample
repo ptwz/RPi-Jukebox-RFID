@@ -1,0 +1,12 @@
+[Unit]  
+Description=Phoniebox LED service
+
+[Service]
+User=root
+Group=pi
+Restart=always
+WorkingDirectory=/home/pi/RPi-Jukebox-RFID
+ExecStart=/home/pi/RPi-Jukebox-RFID/scripts/daemon_leds.py
+
+[Install]
+WantedBy=multi-user.target
